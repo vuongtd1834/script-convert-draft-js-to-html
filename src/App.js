@@ -1,22 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import draftToHtml from 'draftjs-to-html';
+
+import { mockData } from './mock';
 
 function App() {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  useEffect(() => {
+    setEditorState(EditorState.createWithContent(convertFromRaw(mockData)))
+  }, [])
+
+  const markup = draftToHtml(
+    convertToRaw(editorState.getCurrentContent()), 
+  );
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div dangerouslySetInnerHTML={{__html: markup}}></div>
       </header>
     </div>
   );
